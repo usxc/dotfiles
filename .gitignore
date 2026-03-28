@@ -1,0 +1,20 @@
+### all ignore ###
+/*
+/.**
+
+### not ignore ###
+!/.zshrc
+!/.config/
+!/.config/wezterm/
+!/.config/ghostty/
+!/.config/starship.toml
+!/.config/wezterm/wezterm.lua
+!/.config/wezterm/keybind.lua
+!/.config/ghostty/config.ghostty
+
+
+!install.sh
+!/.gitignore
+!/.gitkeep
+!/README.md
+!/LICENSE

@@ -1,0 +1,235 @@
+# Starship Prompt Configuration File
+# https://starship.rs/config/
+# This configuration uses the Catppuccin Frappe color scheme and customizes various modules.
+
+# 全体のプロンプトフォーマット設定
+format = """
+[](fg:yellow)\
+$os\
+[](fg:yellow bg:green)\
+$directory\
+[](fg:green bg:sky)\
+$git_branch\
+$git_status\
+[](fg:sky bg:sapphire)\
+$c\
+$dart\
+$gcloud\
+$golang\
+$gradle\
+$java\
+$kotlin\
+$lua\
+$nodejs\
+$php\
+$python\
+$typst\
+$ruby\
+$rust\
+[](fg:sapphire bg:blue)\
+$conda\
+$docker_context\
+$package\
+$aws\
+[](fg:blue bg:surface0)\
+$cmd_duration\
+[](fg:surface0)\
+$line_break\
+$username\
+$character\
+"""
+
+# catppuccin-frappeのcolor schemes
+palette = "CatppuccinFrappe"
+
+# left_promptとright_promptの間を何で埋めるか設定
+[fill]
+symbol = ' '
+
+[os]
+format = "[$symbol ]($style)"
+style = "fg:surface0 bg:yellow"
+disabled = false
+
+[os.symbols]
+Windows = "  "        # nf-dev-windows
+Macos = "  "          # nf-fa-apple
+Fedora = "󰣛 "          # nf-linux-fedora
+Alpine = " "          # nf-linux-alpine
+Ubuntu = "  "         # nf-linux-ubuntu
+Debian = "  "         # nf-linux-debian
+Arch = "  "           # nf-linux-archlinux
+Artix = "󰣇 "           # nf-linux-artixlinux
+CentOS = " "          # nf-linux-centos
+Redhat = "󱄛 "          # nf-linux-redhat
+RedHatEnterprise = "󱄛" # nf-linux-redhat
+
+[directory]
+truncation_length = 3
+truncate_to_repo = false
+truncation_symbol = "…/"
+home_symbol = "󰠦 "
+read_only = "󰌾 "
+format = "[ $symbol $path ]($style)([$read_only ]($read_only_style))"
+style = "fg:surface0 bg:green"
+read_only_style = "fg:red bold bg:green"
+repo_root_format = """
+[ $before_root_path]($before_repo_root_style)\
+[$repo_root]($repo_root_style)\
+[$path]($style)\
+[$read_only ]($read_only_style)\
+"""
+repo_root_style = "fg:surface0 bold bg:green"
+before_repo_root_style = "fg:overlay0 bg:green"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
+[character]
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+
+# コマンドの実行時間
+[cmd_duration]
+min_time = 0
+show_milliseconds = false
+format = '[ $duration ](fg:blue bold bg:surface0)'
+
+# 現在時刻
+[time]
+disabled = true                # 時間表示はWezTermのステータスバーで代用するため無効化
+time_format = "%R"             # Hour:Minute Format
+style = "fg:surface0 bg:blue"
+format = '[  $time ]($style)'
+
+# Git関連の設定
+[git_branch]
+symbol = ""
+style = "fg:surface0 bg:sky"
+format = '[ $symbol $branch]($style)'
+
+[git_status]
+style = "fg:surface0 bg:sky"
+format = '[($all_status $ahead_behind) ]($style)'
+
+# 各種開発環境の設定
+[aws]
+style = "fg:surface0 bg:blue"
+format = '[[ $symbol ](fg:yellow bg:blue)($profile $region) ]($style)'
+
+[conda]
+symbol = ""                                                                # nf-dev-anaconda
+style = "fg:surface0 bg:blue"
+format = '[[ $symbol $environment ](fg:yellow bg:blue)($version) ]($style)'
+ignore_base = false
+
+[docker_context]
+style = "fg:surface0 bg:blue"
+format = '[[ $symbol ](fg:yellow bg:blue)($context) ]($style)'
+
+[package]
+symbol = ""                                                                # nf-oct-package
+format = '[[ $symbol ](fg:yellow bg:blue)($version) ](fg:surface0 bg:blue)'
+
+# 各言語の設定
+[c]
+symbol = ""                                                      # nf-custom-c
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version)]($style)'
+
+[dart]
+symbol = " "                                                     # nf-seti-dart
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version)]($style)'
+
+[gcloud]
+disabled = true
+
+[golang]
+symbol = ""
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[gradle]
+symbol = " "                                                      # nf-dev-gradle
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[java]
+symbol = " "
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[kotlin]
+symbol = " "
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[lua]
+symbol = "󰢱"
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[nodejs]
+symbol = ""
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[php]
+symbol = ""
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[python]
+symbol = " "
+style = "fg:surface0 bg:sapphire"
+python_binary = ["python", "python3"]
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[typst]
+symbol = ""                                                       # nf-linux-typst
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[ruby]
+symbol = ""                                                       # nf-seti-ruby
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+[rust]
+symbol = ""
+style = "fg:surface0 bg:sapphire"
+format = '[[ $symbol ](fg:yellow bg:sapphire)($version) ]($style)'
+
+
+# Color palette definition
+[palettes.CatppuccinFrappe]
+rosewater = "#f2d5cf"
+flamingo = "#eebebe"
+pink = "#f4b8e4"
+mauve = "#ca9ee6"
+red = "#e78284"
+maroon = "#ea999c"
+peach = "#ef9f76"
+yellow = "#e5c890"
+green = "#a6d189"
+teal = "#81c8be"
+sky = "#99d1db"
+sapphire = "#85c1dc"
+blue = "#8caaee"
+lavender = "#babbf1"
+text = "#c6d0f5"
+subtext1 = "#b5bfe2"
+subtext0 = "#a5adce"
+overlay2 = "#949cbb"
+overlay1 = "#838ba7"
+overlay0 = "#737994"
+surface2 = "#626880"
+surface1 = "#51576d"
+surface0 = "#414559"
+base = "#303446"
+mantle = "#292c3c"
+crust = "#232634"
