@@ -1,7 +1,7 @@
 # Install
 
 ```bash
-git clone <YOUR_DOTFILES_REPOSITORY_URL> ~/dotfiles
+git clone https://github.com/usxc/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 chmod +x install.sh
 ./install.sh --dry-run
