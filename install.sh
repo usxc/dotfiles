@@ -14,8 +14,7 @@ DRY_RUN=0
 TARGETS=(
   ".zshrc"
   ".config/ghostty/config.ghostty"
-  ".config/wezterm/wezterm.lua"
-  ".config/wezterm/keybind.lua"
+  ".config/wezterm"
   ".config/starship.toml"
 )
 
