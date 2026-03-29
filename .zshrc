@@ -12,5 +12,6 @@ compinit
 # End of Docker CLI completions
 
 # ~/.zshrc
-
-eval "$(starship init zsh)"
+if [[ "$TERM_PROGRAM" != "vscode" ]]; then
+  eval "$(starship init zsh)"
+fi
