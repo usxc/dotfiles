@@ -11,7 +11,7 @@ autoload -Uz compinit
 compinit
 # End of Docker CLI completions
 
-# Initialize starship only in terminals other than VS Code
-if [[ "$TERM_PROGRAM" != "vscode" ]]; then
+# Initialize starship except in editor terminals
+if [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "cursor" ]] && [[ -z "$ZED_TERM" ]]; then
   eval "$(starship init zsh)"
 fi
