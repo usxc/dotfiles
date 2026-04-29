@@ -1,0 +1,20 @@
+{...}: {
+  programs.starship = {
+    enable = true;
+    enableZshIntegration = true;
+
+    settings = {
+      "$schema" = "https://starship.rs/config-schema.json";
+
+      command_timeout = 2000;
+
+      python = {
+        python_binary = "python3";
+      };
+
+      cmd_duration = {
+        min_time = 1000;
+      };
+    };
+  };
+}
