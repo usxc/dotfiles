@@ -1,0 +1,46 @@
+# --- Theme ---
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+
+# --- Font ---
+# 英数字メイン
+font-family = Hack Nerd Font
+# 日本語フォールバック
+font-family = BIZ UDGothic
+font-size = 14
+font-thicken = true
+
+# --- Window look ---
+window-padding-x = 10
+window-padding-y = 10
+background-opacity = 0.80
+background-blur = 10
+
+# --- Split panes ---
+unfocused-split-opacity = 0.80
+split-divider-color = #ff8700
+
+# --- Working directory inheritance ---
+# 新しい分割・タブ・ウィンドウで今いるフォルダを引き継ぐ
+split-inherit-working-directory = true
+tab-inherit-working-directory = true
+window-inherit-working-directory = true
+
+# --- Useful defaults ---
+window-save-state = always
+cursor-style = bar
+cursor-style-blink = false
+macos-titlebar-style = transparent
+
+# --- Custom keybinds for splits ---
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+
+# Move between splits
+keybind = cmd+ctrl+h=goto_split:left
+keybind = cmd+ctrl+l=goto_split:right
+keybind = cmd+ctrl+k=goto_split:up
+keybind = cmd+ctrl+j=goto_split:down
+
+# remove titlebar icon
+macos-titlebar-proxy-icon = hidden
+title = " "
