@@ -46,6 +46,9 @@
         if [ -d "/opt/homebrew/bin" ]; then
           export PATH="$PATH:/opt/homebrew/bin"
         fi
+
+        # PATH / fpath の重複を削除する
+        typeset -U path fpath
       '')
     ];
   };
