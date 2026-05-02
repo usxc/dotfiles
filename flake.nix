@@ -13,12 +13,18 @@
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     nixpkgs,
     nix-darwin,
     home-manager,
+    fenix,
     ...
   }: let
     system = "aarch64-darwin";
@@ -32,6 +38,9 @@
 
     pkgs = import nixpkgs {
       inherit system;
+      overlays = [
+        fenix.overlays.default
+      ];
       config.allowUnfree = true;
     };
   in {

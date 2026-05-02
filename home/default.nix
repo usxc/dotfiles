@@ -16,5 +16,9 @@
     stateVersion = "25.11";
   };
 
+  xdg.configFile = {
+    "aerospace/aerospace.toml".source = ../configs/aerospace/aerospace.toml;
+  };
+
   programs.home-manager.enable = true;
 }
