@@ -1,0 +1,69 @@
+# AeroSpace - beginner minimal config
+
+config-version = 2
+start-at-login = false
+
+# qwerty 配列としてキーを扱う
+key-mapping.preset = 'qwerty'
+
+# フォーカスしたウィンドウの中央へマウスを寄せる
+# 不要ならこの1行は削ってOK
+on-focus-changed = ['move-mouse window-lazy-center']
+
+# ウィンドウの隙間設定
+[gaps]
+inner.horizontal = 0
+inner.vertical = 0
+outer.left = 0
+outer.right = 0
+outer.top = 0
+outer.bottom = 0
+
+# Finder / System Settings / Activity Monitor は自由配置にする
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+run = 'layout floating'
+
+[mode.main.binding]
+
+# フォーカス移動
+ctrl-h = 'focus left'
+ctrl-j = 'focus down'
+ctrl-k = 'focus up'
+ctrl-l = 'focus right'
+
+# ウィンドウ移動
+ctrl-shift-h = 'move left'
+ctrl-shift-j = 'move down'
+ctrl-shift-k = 'move up'
+ctrl-shift-l = 'move right'
+
+# ワークスペース切り替え
+ctrl-1 = 'workspace 1'
+ctrl-2 = 'workspace 2'
+ctrl-3 = 'workspace 3'
+ctrl-4 = 'workspace 4'
+
+# 今のウィンドウをワークスペースへ移動し、自分も移動先へ付いていく
+ctrl-shift-1 = 'move-node-to-workspace --focus-follows-window 1'
+ctrl-shift-2 = 'move-node-to-workspace --focus-follows-window 2'
+ctrl-shift-3 = 'move-node-to-workspace --focus-follows-window 3'
+ctrl-shift-4 = 'move-node-to-workspace --focus-follows-window 4'
+
+# レイアウト操作
+ctrl-t = 'layout tiles horizontal vertical'
+ctrl-f = 'layout floating tiling'
+
+# フルスクリーン切り替え
+ctrl-shift-f = 'fullscreen'
+
+# 設定を再読み込み
+ctrl-alt-r = 'reload-config'
