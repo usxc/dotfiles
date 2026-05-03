@@ -1,16 +1,27 @@
-# AeroSpace - beginner minimal config
+# AeroSpace - Tiling window manager configuration
+# https://nikitabobko.github.io/AeroSpace/guide
+
+
+# =============================================================================
+# 基本設定
+# =============================================================================
 
 config-version = 2
 start-at-login = false
 
-# qwerty 配列としてキーを扱う
+# キーボード配列を qwerty として扱う
 key-mapping.preset = 'qwerty'
 
-# フォーカスしたウィンドウの中央へマウスを寄せる
-# 不要ならこの1行は削ってOK
+# フォーカスが移動したとき、マウスカーソルを対象ウィンドウの中央付近へ移動
 on-focus-changed = ['move-mouse window-lazy-center']
 
-# ウィンドウの隙間設定
+# =============================================================================
+# ウィンドウ間の余白設定
+# =============================================================================
+# inner: ウィンドウ同士の間隔
+# outer: 画面端とウィンドウの間隔
+# =============================================================================
+
 [gaps]
 inner.horizontal = 0
 inner.vertical = 0
@@ -19,51 +30,124 @@ outer.right = 0
 outer.top = 0
 outer.bottom = 0
 
-# Finder / System Settings / Activity Monitor は自由配置にする
+# =============================================================================
+# Floating 対象アプリ
+# =============================================================================
+# 以下のアプリはタイル配置ではなく、通常の macOS ウィンドウのように自由配置に
+# =============================================================================
+
+# Finder は floating にする
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
 run = 'layout floating'
 
+# システム設定は floating にする
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
 run = 'layout floating'
 
+# アクティビティモニタは floating にする
 [[on-window-detected]]
 if.app-id = 'com.apple.ActivityMonitor'
 run = 'layout floating'
 
+# Ghostty は floating にする
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = 'layout floating'
+
+# cmux は floating にする
+[[on-window-detected]]
+if.app-id = 'com.cmuxterm.app'
+run = 'layout floating'
+
+# cmux Nightly を使っている場合はこちらも floating にする
+[[on-window-detected]]
+if.app-id = 'com.cmuxterm.app.nightly'
+run = 'layout floating'
+
+# =============================================================================
+# メインモードのキーバインド
+# =============================================================================
+# 通常時に使うショートカットを定義
+# =============================================================================
+
 [mode.main.binding]
 
+# -----------------------------------------------------------------------------
 # フォーカス移動
+# -----------------------------------------------------------------------------
+# 現在のウィンドウから、上下左右のウィンドウへフォーカスを移動
+
 ctrl-h = 'focus left'
 ctrl-j = 'focus down'
 ctrl-k = 'focus up'
 ctrl-l = 'focus right'
 
+# -----------------------------------------------------------------------------
 # ウィンドウ移動
+# -----------------------------------------------------------------------------
+# 現在のウィンドウを、タイルレイアウト内で上下左右へ移動
+
 ctrl-shift-h = 'move left'
 ctrl-shift-j = 'move down'
 ctrl-shift-k = 'move up'
 ctrl-shift-l = 'move right'
 
+# -----------------------------------------------------------------------------
 # ワークスペース切り替え
+# -----------------------------------------------------------------------------
+# 指定した番号のワークスペースへ移動
+
+ctrl-0 = 'workspace 0'
 ctrl-1 = 'workspace 1'
 ctrl-2 = 'workspace 2'
 ctrl-3 = 'workspace 3'
 ctrl-4 = 'workspace 4'
+ctrl-5 = 'workspace 5'
+ctrl-6 = 'workspace 6'
+ctrl-7 = 'workspace 7'
+ctrl-8 = 'workspace 8'
+ctrl-9 = 'workspace 9'
 
-# 今のウィンドウをワークスペースへ移動し、自分も移動先へ付いていく
+# -----------------------------------------------------------------------------
+# ウィンドウをワークスペースへ移動
+# -----------------------------------------------------------------------------
+# 現在のウィンドウを指定したワークスペースへ移動
+# --focus-follows-window により、自分も移動先のワークスペースへ一緒に移動
+
+ctrl-shift-0 = 'move-node-to-workspace --focus-follows-window 0'
 ctrl-shift-1 = 'move-node-to-workspace --focus-follows-window 1'
 ctrl-shift-2 = 'move-node-to-workspace --focus-follows-window 2'
 ctrl-shift-3 = 'move-node-to-workspace --focus-follows-window 3'
 ctrl-shift-4 = 'move-node-to-workspace --focus-follows-window 4'
+ctrl-shift-5 = 'move-node-to-workspace --focus-follows-window 5'
+ctrl-shift-6 = 'move-node-to-workspace --focus-follows-window 6'
+ctrl-shift-7 = 'move-node-to-workspace --focus-follows-window 7'
+ctrl-shift-8 = 'move-node-to-workspace --focus-follows-window 8'
+ctrl-shift-9 = 'move-node-to-workspace --focus-follows-window 9'
 
-# レイアウト操作
+# -----------------------------------------------------------------------------
+# レイアウト切り替え
+# -----------------------------------------------------------------------------
+# タイル方向の切り替えや、floating / tiling の切り替えを行う
+
+# タイルレイアウトの向きを horizontal / vertical で切り替える
 ctrl-t = 'layout tiles horizontal vertical'
+
+# 現在のウィンドウを floating / tiling で切り替える
 ctrl-f = 'layout floating tiling'
 
+# -----------------------------------------------------------------------------
 # フルスクリーン切り替え
+# -----------------------------------------------------------------------------
+# AeroSpace 管理下で、現在のウィンドウをフルスクリーン表示に切り替える
+
 ctrl-shift-f = 'fullscreen'
 
-# 設定を再読み込み
+# -----------------------------------------------------------------------------
+# 設定の再読み込み
+# -----------------------------------------------------------------------------
+# aerospace.toml を編集したあと、このショートカットで設定を再読み込み
+
 ctrl-alt-r = 'reload-config'
