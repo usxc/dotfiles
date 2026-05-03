@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}: {
+{lib, ...}: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -42,6 +39,13 @@
         fi
 
         export PATH
+
+        # rbenv
+        export RBENV_ROOT="$HOME/.rbenv"
+
+        if command -v rbenv >/dev/null 2>&1; then
+          eval "$(rbenv init - zsh)"
+        fi
       '')
     ];
   };
