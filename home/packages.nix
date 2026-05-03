@@ -1,20 +1,17 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    # Runtime
+    # Runtimes
     nodejs_22
     bun
     pnpm
+    uv
+
+    # Language version manager
+    mise
 
     # Nix
     nixd
     nixfmt-rfc-style
-    
-    # Python
-    uv
-
-    # Ruby
-    rbenv
-    ruby-build
 
     # Rust
     (fenix.stable.withComponents [
@@ -26,7 +23,7 @@
     ])
     rust-analyzer
 
-    # Typescript
+    # TypeScript
     typescript-language-server
 
     # Lua
