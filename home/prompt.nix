@@ -25,6 +25,8 @@
     if [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "cursor" ]] && [[ -z "$ZED_TERM" ]]; then
       eval "$(${pkgs.starship}/bin/starship init zsh)"
     else
+      unset STARSHIP_SHELL
+      unset STARSHIP_SESSION_KEY
       PROMPT='%F{cyan}%~%f %# '
     fi
   '';
