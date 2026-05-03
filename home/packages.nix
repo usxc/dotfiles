@@ -2,20 +2,20 @@
   home.packages = with pkgs; [
     # Runtime
     nodejs_22
-    uv
     bun
     pnpm
-
-    # Database
-    sqlite
 
     # Nix
     nixd
     nixfmt-rfc-style
     
+    # Python
+    uv
+
     # Ruby
-    ruby_3_4
-    
+    rbenv
+    ruby-build
+
     # Rust
     (fenix.stable.withComponents [
       "cargo"
@@ -33,6 +33,9 @@
     lua5_5
     lua-language-server
     stylua
+
+    # Database
+    sqlite
 
     # Git / GitHub
     gh
