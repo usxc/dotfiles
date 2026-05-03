@@ -5,6 +5,10 @@
     uv
     bun
     pnpm
+    
+    # Nix
+    nixd
+    nixfmt-rfc-style
 
     # Rust
     (fenix.stable.withComponents [
