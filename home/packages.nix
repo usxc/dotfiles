@@ -5,11 +5,17 @@
     uv
     bun
     pnpm
-    
+
+    # Database
+    sqlite
+
     # Nix
     nixd
     nixfmt-rfc-style
-
+    
+    # Ruby
+    ruby_3_4
+    
     # Rust
     (fenix.stable.withComponents [
       "cargo"
