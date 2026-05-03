@@ -40,11 +40,9 @@
 
         export PATH
 
-        # rbenv
-        export RBENV_ROOT="$HOME/.rbenv"
-
-        if command -v rbenv >/dev/null 2>&1; then
-          eval "$(rbenv init - zsh)"
+        # mise
+        if command -v mise >/dev/null 2>&1; then
+          eval "$(mise activate zsh)"
         fi
       '')
     ];
