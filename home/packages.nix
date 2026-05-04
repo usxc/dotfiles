@@ -11,7 +11,7 @@
 
     # Nix
     nixd
-    nixfmt-rfc-style
+    nixfmt
 
     # Rust
     (fenix.stable.withComponents [
