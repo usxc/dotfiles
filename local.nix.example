@@ -1,0 +1,9 @@
+{
+  username = "your-macos-username";
+  hostname = "Your-MacBook-Air";
+
+  git = {
+    name = "your-git-name";
+    email = "you@example.com";
+  };
+}

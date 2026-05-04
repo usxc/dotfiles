@@ -8,26 +8,45 @@ This repository uses Nix, nix-darwin, Home Manager, and flakes.
 
 Home Manager is integrated into nix-darwin, so daily updates are applied with `./rebuild.sh`.
 
-## Quick Start
+## Initial Setup
 
-Clone this repository.
+### macOS
+
+#### 1. Install Nix
+
+Install Nix first if it is not already installed.
+
+Using the Nix modern installer:
+
+```bash
+curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
+```
+
+After installation, restart your terminal.
+
+Check that Nix is available:
+
+```bash
+nix --version
+```
+
+#### 2. Clone this repository
 
 ```bash
 git clone https://github.com/usxc/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-Run the setup script.
+#### 3. Create `local.nix`
+
+Create `local.nix` from the example file.
 
 ```bash
-./setup.sh
+cp local.nix.example local.nix
+$EDITOR local.nix
 ```
 
-`setup.sh` is for a fresh macOS environment.
-
-It checks Nix, creates `local.nix` if needed, and runs either `bootstrap.sh` or `rebuild.sh` depending on whether nix-darwin is already installed.
-
-`local.nix` is ignored by Git.
+`local.nix` contains machine-local settings.
 
 Example:
 
@@ -43,71 +62,41 @@ Example:
 }
 ```
 
-If Nix is not installed, `setup.sh` asks before running the official Nix installer.
+You can check each value with the following commands.
 
-After installing Nix, restart the terminal and run setup again.
+| key | command |
+|---|---|
+| `username` | `id -un` |
+| `hostname` | `scutil --get LocalHostName` or `hostname -s` |
+| `git.name` | `git config --global user.name` |
+| `git.email` | `git config --global user.email` |
 
-```bash
-cd ~/dotfiles
-./setup.sh
-```
-
-## Structure
-
-```text
-.
-├── flake.nix                 # Entry point (local darwinConfiguration)
-├── flake.lock
-├── local.nix                 # Local machine config (ignored by Git)
-├── setup.sh                  # Fresh macOS setup
-├── bootstrap.sh              # Initial nix-darwin activation
-├── rebuild.sh                # Daily rebuild
-├── .gitignore
-├── hosts/darwin/             # nix-darwin system config
-├── home/                     # home-manager modules
-│   ├── default.nix           # Home Manager entry point
-│   ├── packages.nix          # All packages
-│   ├── git.nix               # Git
-│   ├── shell.nix             # Zsh
-│   ├── prompt.nix            # Starship
-│   └── terminals.nix         # Terminal config links
-└── configs/                  # Dotfiles (linked via home-manager)
-    └── ghostty/              # Ghostty
-```
-
-## Scripts
-
-### `setup.sh`
-
-Fresh macOS setup.
+If Git user name or email is not configured yet, configure them first.
 
 ```bash
-./setup.sh
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
 ```
 
-### `bootstrap.sh`
+Then write the same values to `local.nix`.
 
-Initial nix-darwin activation.
+`local.nix` is specific to this Mac and should not be committed to Git.
 
-Use this when Nix and `local.nix` already exist, but `darwin-rebuild` is not installed yet.
+#### 4. Bootstrap nix-darwin
+
+Run the initial nix-darwin activation.
 
 ```bash
 ./bootstrap.sh
 ```
 
-Usually `setup.sh` runs this automatically.
+This applies the initial nix-darwin and Home Manager configuration.
 
-### `rebuild.sh`
-
-Daily rebuild after editing configs.
-
-```bash
-./rebuild.sh
-```
+After this step, use `./rebuild.sh` for daily updates.
 
 ## Daily Usage
 
-Apply changes.
+Apply configuration changes.
 
 ```bash
 cd ~/dotfiles
@@ -122,26 +111,48 @@ nix flake update
 ./rebuild.sh
 ```
 
-Check scripts.
+## Scripts
+
+### `bootstrap.sh`
+
+Initial nix-darwin activation.
+
+Use this only for the first setup, when Nix is installed but `darwin-rebuild` is not available yet.
 
 ```bash
-bash -n setup.sh
-bash -n bootstrap.sh
-bash -n rebuild.sh
+./bootstrap.sh
 ```
 
-Check whether `local.nix` is ignored by Git.
+### `rebuild.sh`
+
+Daily rebuild after editing configs.
 
 ```bash
-git check-ignore -v local.nix
+./rebuild.sh
 ```
 
-Expected priority:
+## Structure
 
 ```text
-/run/current-system/sw/bin
-/etc/profiles/per-user/<username>/bin
-/opt/homebrew/bin
+.
+├── flake.nix                 # Entry point
+├── flake.lock
+├── local.nix.example         # Example local machine config
+├── local.nix                 # Local machine config (ignored by Git)
+├── bootstrap.sh              # Initial nix-darwin activation
+├── rebuild.sh                # Daily rebuild
+├── .gitignore
+├── hosts/darwin/             # nix-darwin system config
+├── home/                     # Home Manager modules
+│   ├── default.nix           # Home Manager entry point
+│   ├── packages.nix          # Packages
+│   ├── git.nix               # Git
+│   ├── shell.nix             # Zsh
+│   ├── prompt.nix            # Starship
+│   └── terminals.nix         # Terminal config links
+└── configs/                  # Dotfiles linked by Home Manager
+    └── ghostty/              # Ghostty
+    └── aerospace/            # AeroSpace
 ```
 
 ## Requirements
@@ -149,10 +160,6 @@ Expected priority:
 ```text
 macOS
 Apple Silicon Mac
+Nix
 Git
-Internet connection for first setup
 ```
-
-Nix is not required before running `setup.sh`.
-
-If Nix is missing, `setup.sh` will ask before installing it.

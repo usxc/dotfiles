@@ -8,26 +8,45 @@ macOS 用の個人 dotfiles です。
 
 Home Manager は nix-darwin に統合しているため、日常的な更新は `./rebuild.sh` で適用します。
 
-## Quick Start
+## Initial Setup
 
-リポジトリを clone します。
+### macOS
+
+#### 1. Nix をインストールする
+
+Nix がまだ入っていない場合は、先に Nix をインストールします。
+
+Nix modern installer を使う場合:
+
+```bash
+curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
+```
+
+インストール後、ターミナルを開き直します。
+
+Nix が使えることを確認します。
+
+```bash
+nix --version
+```
+
+#### 2. リポジトリを clone する
 
 ```bash
 git clone https://github.com/usxc/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-セットアップスクリプトを実行します。
+#### 3. `local.nix` を作成する
+
+`local.nix.example` から `local.nix` を作成します。
 
 ```bash
-./setup.sh
+cp local.nix.example local.nix
+$EDITOR local.nix
 ```
 
-`setup.sh` は新しい macOS 環境向けのスクリプトです。
-
-Nix を確認し、必要なら `local.nix` を作成し、nix-darwin がすでに入っているかどうかに応じて `bootstrap.sh` または `rebuild.sh` を実行します。
-
-`local.nix` は Git から無視されます。
+`local.nix` には、この Mac 固有の設定を書きます。
 
 例:
 
@@ -43,71 +62,41 @@ Nix を確認し、必要なら `local.nix` を作成し、nix-darwin がすで�
 }
 ```
 
-Nix が入っていない場合、`setup.sh` は公式 Nix installer を実行する前に確認します。
+各値は以下のコマンドで確認できます。
 
-Nix のインストール後は、ターミナルを再起動してからもう一度 setup を実行します。
+| key | command |
+|---|---|
+| `username` | `id -un` |
+| `hostname` | `scutil --get LocalHostName` または `hostname -s` |
+| `git.name` | `git config --global user.name` |
+| `git.email` | `git config --global user.email` |
 
-```bash
-cd ~/dotfiles
-./setup.sh
-```
-
-## Structure
-
-```text
-.
-├── flake.nix                 # エントリーポイント (local darwinConfiguration)
-├── flake.lock
-├── local.nix                 # ローカル環境設定 (Git では無視)
-├── setup.sh                  # 新しい macOS 環境のセットアップ
-├── bootstrap.sh              # 初回の nix-darwin activation
-├── rebuild.sh                # 日常的な rebuild
-├── .gitignore
-├── hosts/darwin/             # nix-darwin システム設定
-├── home/                     # home-manager modules
-│   ├── default.nix           # Home Manager エントリーポイント
-│   ├── packages.nix          # すべてのパッケージ
-│   ├── git.nix               # Git
-│   ├── shell.nix             # Zsh
-│   ├── prompt.nix            # Starship
-│   └── terminals.nix         # ターミナル設定リンク
-└── configs/                  # Dotfiles (home-manager でリンク)
-    └── ghostty/              # Ghostty
-```
-
-## Scripts
-
-### `setup.sh`
-
-新しい macOS 環境のセットアップ用です。
+Git のユーザー名やメールアドレスが未設定の場合は、先に設定します。
 
 ```bash
-./setup.sh
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
 ```
 
-### `bootstrap.sh`
+その後、同じ値を `local.nix` に書きます。
 
-初回の nix-darwin activation 用です。
+`local.nix` はこの Mac 固有の設定です。Git にはコミットしません。
 
-Nix と `local.nix` は存在するが、まだ `darwin-rebuild` が入っていない場合に使います。
+#### 4. nix-darwin を初回適用する
+
+初回の nix-darwin activation を実行します。
 
 ```bash
 ./bootstrap.sh
 ```
 
-通常は `setup.sh` が自動で実行します。
+これで nix-darwin と Home Manager の設定が初回適用されます。
 
-### `rebuild.sh`
-
-設定を編集した後の日常的な rebuild 用です。
-
-```bash
-./rebuild.sh
-```
+以降の日常的な更新には `./rebuild.sh` を使います。
 
 ## Daily Usage
 
-変更を適用します。
+設定変更を反映します。
 
 ```bash
 cd ~/dotfiles
@@ -122,26 +111,48 @@ nix flake update
 ./rebuild.sh
 ```
 
-スクリプトの構文を確認します。
+## Scripts
+
+### `bootstrap.sh`
+
+初回の nix-darwin activation 用です。
+
+Nix は入っているが、まだ `darwin-rebuild` が使えない状態で実行します。
 
 ```bash
-bash -n setup.sh
-bash -n bootstrap.sh
-bash -n rebuild.sh
+./bootstrap.sh
 ```
 
-`local.nix` が Git から無視されているか確認します。
+### `rebuild.sh`
+
+設定を編集した後の日常的な rebuild 用です。
 
 ```bash
-git check-ignore -v local.nix
+./rebuild.sh
 ```
 
-期待する優先順位:
+## Structure
 
 ```text
-/run/current-system/sw/bin
-/etc/profiles/per-user/<username>/bin
-/opt/homebrew/bin
+.
+├── flake.nix                 # エントリーポイント
+├── flake.lock
+├── local.nix.example         # ローカル設定の例
+├── local.nix                 # ローカル環境設定 (Git では無視)
+├── bootstrap.sh              # 初回の nix-darwin activation
+├── rebuild.sh                # 日常的な rebuild
+├── .gitignore
+├── hosts/darwin/             # nix-darwin システム設定
+├── home/                     # Home Manager modules
+│   ├── default.nix           # Home Manager エントリーポイント
+│   ├── packages.nix          # パッケージ
+│   ├── git.nix               # Git
+│   ├── shell.nix             # Zsh
+│   ├── prompt.nix            # Starship
+│   └── terminals.nix         # ターミナル設定リンク
+└── configs/                  # Home Manager でリンクする dotfiles
+    └── ghostty/              # Ghostty
+    └── aerospace/            # AeroSpace
 ```
 
 ## Requirements
@@ -149,10 +160,6 @@ git check-ignore -v local.nix
 ```text
 macOS
 Apple Silicon Mac
+Nix
 Git
-Internet connection for first setup
 ```
-
-`setup.sh` を実行する前に Nix が入っている必要はありません。
-
-Nix がない場合、`setup.sh` がインストール前に確認します。
