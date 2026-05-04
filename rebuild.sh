@@ -4,52 +4,18 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LOCAL_NIX_PATH="${DOTFILES_LOCAL_NIX:-$SCRIPT_DIR/local.nix}"
 
-die() {
-  echo "Error: $*" >&2
+if [ ! -f "$LOCAL_NIX_PATH" ]; then
+  echo "Error: local.nix not found: $LOCAL_NIX_PATH" >&2
+  echo "Create it from local.nix.example first." >&2
   exit 1
-}
+fi
 
-ensure_macos() {
-  if [ "$(uname -s)" != "Darwin" ]; then
-    die "This script is only for macOS."
-  fi
-}
+HOSTNAME_VALUE="$(
+  nix eval --impure --raw --expr "(import \"$LOCAL_NIX_PATH\").hostname"
+)"
 
-ensure_nix() {
-  if ! command -v nix >/dev/null 2>&1; then
-    die "Nix is not installed. Run ./setup.sh first."
-  fi
-}
+cd "$SCRIPT_DIR"
 
-ensure_local_nix() {
-  if [ ! -f "$LOCAL_NIX_PATH" ]; then
-    die "local.nix not found: $LOCAL_NIX_PATH. Run ./setup.sh first."
-  fi
-}
-
-ensure_darwin_rebuild() {
-  if ! command -v darwin-rebuild >/dev/null 2>&1; then
-    die "darwin-rebuild is not installed yet. Run ./bootstrap.sh first."
-  fi
-}
-
-main() {
-  ensure_macos
-  ensure_nix
-  ensure_local_nix
-  ensure_darwin_rebuild
-
-  local hostname_value
-
-  hostname_value="$(
-    nix eval --impure --raw --expr "(import \"$LOCAL_NIX_PATH\").hostname"
-  )"
-
-  cd "$SCRIPT_DIR"
-
-  DOTFILES_LOCAL_NIX="$LOCAL_NIX_PATH" \
-    sudo --preserve-env=DOTFILES_LOCAL_NIX \
-    darwin-rebuild switch --impure --flake ".#${hostname_value}"
-}
-
-main "$@"
+DOTFILES_LOCAL_NIX="$LOCAL_NIX_PATH" \
+  sudo --preserve-env=DOTFILES_LOCAL_NIX \
+  darwin-rebuild switch --impure --flake ".#${HOSTNAME_VALUE}"
