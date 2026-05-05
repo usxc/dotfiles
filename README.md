@@ -16,11 +16,13 @@ Home Manager is integrated into nix-darwin, so daily updates are applied with `.
 
 Install Nix first if it is not already installed.
 
-Using the Nix modern installer:
+Using the Nix modern installer with flakes enabled:
 
 ```bash
-curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
+curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable-flakes
 ```
+The installer may ask for confirmation before making changes to the system.
+When prompted with Proceed? `([Y]es/[n]o/[e]xplain)`, press Enter or type `y`.
 
 After installation, restart your terminal.
 

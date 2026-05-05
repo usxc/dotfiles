@@ -16,11 +16,13 @@ Home Manager は nix-darwin に統合しているため、日常的な更新は 
 
 Nix がまだ入っていない場合は、先に Nix をインストールします。
 
-Nix modern installer を使う場合:
+flakes を有効化して Nix modern installer を実行:
 
 ```bash
-curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
+curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable-flakes
 ```
+インストーラーは、システムへ変更を加える前に確認を求めることがあります。
+`Proceed? ([Y]es/[n]o/[e]xplain)` と表示されたら、内容を確認して Enter または `y` を入力します。
 
 インストール後、ターミナルを開き直します。
 
