@@ -22,7 +22,7 @@ Using the Nix modern installer with flakes enabled:
 curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable-flakes
 ```
 The installer may ask for confirmation before making changes to the system.
-When prompted with Proceed? `([Y]es/[n]o/[e]xplain)`, press Enter or type `y`.
+When prompted with `Proceed? ([Y]es/[n]o/[e]xplain)`, press Enter or type `y`.
 
 After installation, restart your terminal.
 
