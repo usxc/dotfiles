@@ -106,7 +106,7 @@ case "$PLATFORM" in
 
     DOTFILES_LOCAL_NIX="$LOCAL_NIX_PATH" \
       "$NIX_BIN" "${NIX_FLAGS[@]}" run --impure --inputs-from . home-manager#home-manager -- \
-        switch --impure --flake ".#${TARGET}"
+        switch -b backup --impure --flake ".#${TARGET}"
     ;;
 
   *)
