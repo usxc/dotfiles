@@ -1,7 +1,17 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  ...
+}:
+{
+  # Applied to:
+  # - Apple Silicon macOS
+  # - x86_64 Linux
+  # - WSL
+  #
+  # Put packages here when they are useful on every supported environment.
   home.packages = with pkgs; [
     # Runtimes
-    nodejs_22
+    nodejs_24
     bun
     pnpm
     uv
@@ -27,7 +37,7 @@
     typescript-language-server
 
     # Lua
-    lua5_5
+    lua5_4
     lua-language-server
     stylua
 
@@ -52,9 +62,7 @@
     wget
     unzip
     fastfetch
-
-    # Desktop Apps
-    aerospace
+    vim
 
     # Fonts
     nerd-fonts.hack
