@@ -122,7 +122,7 @@ case "$PLATFORM" in
     info "Rebuilding Home Manager configuration: $TARGET"
 
     DOTFILES_LOCAL_NIX="$LOCAL_NIX_PATH" \
-      "$HOME_MANAGER_BIN" switch --impure --flake ".#${TARGET}"
+      "$HOME_MANAGER_BIN" switch -b backup --impure --flake ".#${TARGET}"
     ;;
 
   *)
