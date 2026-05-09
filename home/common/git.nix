@@ -1,7 +1,8 @@
 {
   gitUser,
   ...
-}: {
+}:
+{
   programs.git = {
     enable = true;
 
@@ -15,10 +16,6 @@
 
       init = {
         defaultBranch = "main";
-      };
-
-      core = {
-        editor = "code --wait";
       };
     };
   };

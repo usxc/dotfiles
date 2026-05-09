@@ -1,15 +1,19 @@
-{ lib, pkgs, ... }: {
+{
+  lib,
+  pkgs,
+  ...
+}:
+{
   programs.starship = {
     enable = true;
 
-    # Home Manager に無条件で starship init を書かせない
     enableZshIntegration = false;
 
     settings = {
       "$schema" = "https://starship.rs/config-schema.json";
 
       command_timeout = 2000;
-      
+
       python = {
         python_binary = "python3";
       };
@@ -26,7 +30,7 @@
       unset STARSHIP_SHELL
       unset STARSHIP_SESSION_KEY
     fi
-    
+
     # Initialize starship except in editor terminals
     if [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "cursor" ]] && [[ -z "$ZED_TERM" ]]; then
       eval "$(${pkgs.starship}/bin/starship init zsh)"
