@@ -9,6 +9,7 @@
     ./git.nix
     ./shell.nix
     ./prompt.nix
+    ./direnv.nix
   ];
 
   home = {
