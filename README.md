@@ -333,6 +333,7 @@ On macOS, this assumes `darwin-rebuild` is available after bootstrap. On Linux /
 │   │   ├── packages.nix      # Common packages and development tools
 │   │   ├── git.nix           # Git
 │   │   ├── shell.nix         # Zsh
+│   │   ├── direnv.nix        # direnv
 │   │   └── prompt.nix        # Starship
 │   ├── darwin/               # macOS-specific Home Manager modules
 │   │   ├── default.nix       # macOS Home Manager entry point
