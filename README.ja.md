@@ -333,6 +333,7 @@ macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にし
 │   │   ├── packages.nix      # 共通パッケージと開発ツール
 │   │   ├── git.nix           # Git
 │   │   ├── shell.nix         # Zsh
+│   │   ├── direnv.nix        # direnv
 │   │   └── prompt.nix        # Starship
 │   ├── darwin/               # macOS 専用 Home Manager モジュール
 │   │   ├── default.nix       # macOS Home Manager エントリーポイント
