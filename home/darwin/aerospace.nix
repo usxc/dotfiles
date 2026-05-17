@@ -22,14 +22,17 @@ in
       keepAlive = true;
     };
 
-    settings =
-      aerospaceSettings
-      // {
-        # Home Manager controls launching via launchd.
-        start-at-login = false;
+    settings = aerospaceSettings // {
+      # Home Manager controls launching via launchd.
+      start-at-login = false;
 
-        # Use after-startup-command instead if needed.
-        after-login-command = [ ];
-      };
+      # Do not use AeroSpace's own login hook when launchd manages startup.
+      after-login-command = [ ];
+
+      # Start AeroSpace at login, but keep window management disabled initially.
+      after-startup-command = [
+        "enable off"
+      ];
+    };
   };
 }
