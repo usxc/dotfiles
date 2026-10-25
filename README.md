@@ -1,76 +1,74 @@
 # dotfiles
 
-[English](README.md) | [日本語](README.ja.md)
+Apple Silicon macOS と x86_64 Linux / WSL 用の個人 dotfiles です。
 
-Personal dotfiles for Apple Silicon macOS and x86_64 Linux / WSL.
-
-This repository uses Nix flakes, nix-darwin on macOS, and Home Manager on both macOS and Linux.
+このリポジトリでは Nix flakes、macOS では nix-darwin、macOS と Linux の両方で Home Manager を使っています。
 
 ## Initial Setup
 
 ### macOS
 
-#### 1. Install Nix
+#### 1. Nix をインストールする
 
-Install Nix first if it is not already installed.
+Nix がまだ入っていない場合は、先に Nix をインストールします。
 
-Run the Nix modern installer with flakes enabled.
+flakes を有効化して Nix modern installer を実行します。
 
 ```bash
 curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable-flakes
 ```
 
-The installer may ask for confirmation before making changes to the system.
-When prompted with `Proceed? ([Y]es/[n]o/[e]xplain)`, press Enter or type `y`.
+インストーラーは、システムへ変更を加える前に確認を求めることがあります。
+`Proceed? ([Y]es/[n]o/[e]xplain)` と表示されたら、Enter または `y` を入力します。
 
-After installation, restart your terminal.
+インストール後、ターミナルを開き直します。
 
-Check that Nix is available.
+Nix が使えることを確認します。
 
 ```bash
 nix --version
 ```
 
-#### 2. Clone this repository
+#### 2. リポジトリを clone する
 
 ```bash
 git clone https://github.com/usxc/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-#### 3. Configure Git
+#### 3. Git を設定する
 
-`./init-local.sh` reads the global Git user name and email and writes them to `local.nix`.
+`./init-local.sh` は global の Git ユーザー名とメールアドレスを読み取り、`local.nix` に書き込みます。
 
-Check the current values.
+現在の値を確認します。
 
 ```bash
 git config --global user.name
 git config --global user.email
 ```
 
-If either value is not configured yet, configure it first.
+未設定の場合は、先に設定します。
 
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
-#### 4. Create `local.nix`
+#### 4. `local.nix` を作成する
 
-Generate the machine-specific configuration.
+マシン固有の設定を生成します。
 
 ```bash
 ./init-local.sh
 ```
 
-By default, it is created at the following location.
+デフォルトでは、次の場所に作成されます。
 
 ```text
 ~/.config/dotfiles/local.nix
 ```
 
-For Apple Silicon macOS, the generated content looks like this.
+Apple Silicon macOS では、生成される内容は次のようになります。
 
 ```nix
 {
@@ -88,87 +86,87 @@ For Apple Silicon macOS, the generated content looks like this.
 }
 ```
 
-`local.nix` is machine-specific configuration. Do not commit it to Git.
+`local.nix` はマシン固有の設定です。Git にはコミットしません。
 
-If you want to create it in a different location, specify `DOTFILES_LOCAL_NIX` when running the script.
+別の場所に作成したい場合は、スクリプト実行時に `DOTFILES_LOCAL_NIX` を指定します。
 
 ```bash
 DOTFILES_LOCAL_NIX=/path/to/local.nix ./init-local.sh
 ```
 
-#### 5. Apply nix-darwin for the first time
+#### 5. nix-darwin を初回適用する
 
-Run the initial nix-darwin activation.
+初回の nix-darwin activation を実行します。
 
 ```bash
 ./bootstrap.sh
 ```
 
-This applies the nix-darwin system configuration and Home Manager user configuration.
+これで nix-darwin のシステム設定と Home Manager のユーザー設定が適用されます。
 
-Use `./rebuild.sh` for daily updates from this point onward.
+以降の日常的な更新には `./rebuild.sh` を使います。
 
 ### Linux / WSL
 
-#### 1. Install Nix
+#### 1. Nix をインストールする
 
-Install Nix first if it is not already installed.
+Nix がまだ入っていない場合は、先に Nix をインストールします。
 
-Run the Nix modern installer with flakes enabled.
+flakes を有効化して Nix modern installer を実行します。
 
 ```bash
 curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable-flakes
 ```
 
-After installation, restart your shell.
+インストール後、shell を開き直します。
 
-Check that Nix is available.
+Nix が使えることを確認します。
 
 ```bash
 nix --version
 ```
 
-#### 2. Clone this repository
+#### 2. リポジトリを clone する
 
 ```bash
 git clone https://github.com/usxc/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-#### 3. Configure Git
+#### 3. Git を設定する
 
-`./init-local.sh` reads the global Git user name and email and writes them to `local.nix`.
+`./init-local.sh` は global の Git ユーザー名とメールアドレスを読み取り、`local.nix` に書き込みます。
 
-Check the current values.
+現在の値を確認します。
 
 ```bash
 git config --global user.name
 git config --global user.email
 ```
 
-If either value is not configured yet, configure it first.
+未設定の場合は、先に設定します。
 
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
-#### 4. Create `local.nix`
+#### 4. `local.nix` を作成する
 
-Generate the machine-specific configuration.
+マシン固有の設定を生成します。
 
 ```bash
 ./init-local.sh
 ```
 
-For x86_64 Linux / WSL, the generated content looks like this.
+x86_64 Linux / WSL では、生成される内容は次のようになります。
 
 ```nix
 {
   username = "your-linux-username";
 
-  # This value depends on your Linux host or WSL distribution.
-  # Examples: "ubuntu", "debian", "arch", "my-linux"
+  # Linux ホスト名、または WSL ディストリビューション名によって変わります。
+  # 例: "ubuntu", "debian", "arch", "my-linux"
   hostname = "ubuntu";
 
   platform = "linux";
@@ -184,33 +182,33 @@ For x86_64 Linux / WSL, the generated content looks like this.
 }
 ```
 
-`isWsl = true;` is generated only when WSL is detected.
+`isWsl = true;` は WSL を検出した場合だけ生成されます。
 
-The Linux output name has the following format.
+Linux の出力名は次の形式です。
 
 ```text
 homeConfigurations.<username>@<hostname>
 ```
 
-#### 5. Apply Home Manager for the first time
+#### 5. Home Manager を初回適用する
 
-Run the initial Home Manager activation.
+初回の Home Manager activation を実行します。
 
 ```bash
 ./bootstrap.sh
 ```
 
-This applies the Linux / WSL user configuration using the Home Manager flake input.
+これで flake input の Home Manager を使って Linux / WSL のユーザー設定が適用されます。
 
-Use `./rebuild.sh` for daily updates from this point onward.
+以降の日常的な更新には `./rebuild.sh` を使います。
 
-#### 6. Make zsh the login shell
+#### 6. zsh をログインシェルにする
 
-On Linux / WSL, Home Manager creates the zsh configuration.
+Linux / WSL では、Home Manager によって zsh の設定は作成されます。
 
-However, the login shell itself may not automatically change to zsh.
+ただし、ログインシェル自体は自動で zsh に変わらない場合があります。
 
-After `./bootstrap.sh`, run the following once.
+`./bootstrap.sh` の後に、次を一度だけ実行します。
 
 ```bash
 ZSH_PATH="$(command -v zsh)"
@@ -227,39 +225,39 @@ fi
 chsh -s "$ZSH_PATH"
 ```
 
-For WSL, restart WSL from the PowerShell side.
+WSL の場合は、PowerShell 側で WSL を再起動します。
 
 ```powershell
 wsl --shutdown
 ```
 
-Then reopen Linux / WSL and check.
+その後、Linux / WSL を開き直して確認します。
 
 ```bash
 echo "$SHELL"
 ```
 
-It is OK if `zsh` is included.
+`zsh` が含まれていれば OK です。
 
-Use `./rebuild.sh` for daily updates from this point onward.
+以降の日常的な更新には `./rebuild.sh` を使います。
 
 ## Daily Usage
 
-Apply configuration changes.
+設定変更を反映します。
 
 ```bash
 cd ~/dotfiles
 ./rebuild.sh
 ```
 
-`./rebuild.sh` reads `local.nix` and runs the following according to `platform`.
+`./rebuild.sh` は `local.nix` を読み、`platform` に応じて次を実行します。
 
 ```text
 macOS:      darwin-rebuild switch --impure --flake ".#<hostname>"
 Linux/WSL: home-manager switch -b backup --impure --flake ".#<username>@<hostname>"
 ```
 
-Update flake inputs.
+flake inputs を更新します。
 
 ```bash
 cd ~/dotfiles
@@ -267,7 +265,7 @@ nix flake update
 ./rebuild.sh
 ```
 
-If `local.nix` is in a non-default location, specify the same path for daily commands.
+`local.nix` がデフォルト以外の場所にある場合は、日常的なコマンドでも同じパスを指定します。
 
 ```bash
 DOTFILES_LOCAL_NIX=/path/to/local.nix ./rebuild.sh
@@ -277,15 +275,15 @@ DOTFILES_LOCAL_NIX=/path/to/local.nix ./rebuild.sh
 
 ### `init-local.sh`
 
-Generates the machine-specific `local.nix`.
+マシン固有の `local.nix` を生成します。
 
-It detects platform, system, username, hostname, home directory, WSL status, and global Git user information.
+platform、system、username、hostname、home directory、WSL 判定、global の Git ユーザー情報を検出します。
 
 ```bash
 ./init-local.sh
 ```
 
-Use `--force` to overwrite an existing generated file.
+既存の生成済みファイルを上書きする場合は `--force` を使います。
 
 ```bash
 ./init-local.sh --force
@@ -293,9 +291,9 @@ Use `--force` to overwrite an existing generated file.
 
 ### `bootstrap.sh`
 
-For initial activation.
+初回適用用です。
 
-On macOS, it bootstraps using the nix-darwin flake input. On Linux / WSL, it bootstraps using the Home Manager flake input.
+macOS では flake input の nix-darwin を使って bootstrap します。Linux / WSL では flake input の Home Manager を使って bootstrap します。
 
 ```bash
 ./bootstrap.sh
@@ -303,9 +301,9 @@ On macOS, it bootstraps using the nix-darwin flake input. On Linux / WSL, it boo
 
 ### `rebuild.sh`
 
-For daily rebuilds after editing configuration.
+設定を編集した後の日常的な rebuild 用です。
 
-On macOS, this assumes `darwin-rebuild` is available after bootstrap. On Linux / WSL, this assumes `home-manager` is available after bootstrap.
+macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にします。Linux / WSL では bootstrap 後に `home-manager` が使えることを前提にします。
 
 ```bash
 ./rebuild.sh
@@ -315,38 +313,37 @@ On macOS, this assumes `darwin-rebuild` is available after bootstrap. On Linux /
 
 ```text
 .
-├── README.md                 # English README
-├── README.ja.md              # Japanese README
-├── flake.nix                 # flake entry point
-├── flake.lock                # Locked flake inputs
-├── local.nix.example         # Example machine-specific configuration
-├── init-local.sh             # Generate local.nix
-├── bootstrap.sh              # Initial activation
-├── rebuild.sh                # Daily rebuild
+├── README.md                 # 日本語 README
+├── flake.nix                 # flake エントリーポイント
+├── flake.lock                # 固定された flake inputs
+├── local.nix.example         # マシン固有設定の例
+├── init-local.sh             # local.nix 生成
+├── bootstrap.sh              # 初回適用
+├── rebuild.sh                # 日常的な rebuild
 ├── .gitignore
 ├── hosts/
 │   └── darwin/
-│       └── default.nix       # nix-darwin system configuration
+│       └── default.nix       # nix-darwin システム設定
 ├── home/
-│   ├── common/               # Common Home Manager modules
-│   │   ├── default.nix       # Common Home Manager entry point
-│   │   ├── packages.nix      # Common packages and development tools
+│   ├── common/               # 共通 Home Manager モジュール
+│   │   ├── default.nix       # 共通 Home Manager エントリーポイント
+│   │   ├── packages.nix      # 共通パッケージと開発ツール
 │   │   ├── git.nix           # Git
 │   │   ├── shell.nix         # Zsh
 │   │   ├── direnv.nix        # direnv
 │   │   └── prompt.nix        # Starship
-│   ├── darwin/               # macOS-specific Home Manager modules
-│   │   ├── default.nix       # macOS Home Manager entry point
-│   │   ├── packages.nix      # macOS packages
-│   │   └── terminals.nix     # Ghostty config link
-│   └── linux/                # Linux / WSL Home Manager modules
-│       ├── default.nix       # Linux Home Manager entry point
-│       ├── packages.nix      # Linux packages
+│   ├── darwin/               # macOS 専用 Home Manager モジュール
+│   │   ├── default.nix       # macOS Home Manager エントリーポイント
+│   │   ├── packages.nix      # macOS パッケージ
+│   │   └── terminals.nix     # Ghostty 設定リンク
+│   └── linux/                # Linux / WSL Home Manager モジュール
+│       ├── default.nix       # Linux Home Manager エントリーポイント
+│       ├── packages.nix      # Linux パッケージ
 │       ├── session.nix       # Linux session variables
 │       └── wsl.nix           # WSL
 └── configs/
     └── ghostty/
-        └── config.ghostty    # Ghostty config
+        └── config.ghostty    # Ghostty 設定
 ```
 
 ## Requirements
