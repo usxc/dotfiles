@@ -11,12 +11,10 @@
   # Put packages here when they are useful on every supported environment.
   home.packages = with pkgs; [
     # Runtimes
+    nodejs_24
     bun
     pnpm
     uv
-
-    # Language version manager
-    mise
 
     # Nix
     nixd

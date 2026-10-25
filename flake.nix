@@ -31,6 +31,13 @@
     let
       lib = nixpkgs.lib;
 
+      # Official security release while nixpkgs is older than Node.js 24.22.1.
+      # Also update the runtime used by pnpm and other Node.js 24 consumers.
+      nodejsOverlay = final: _: {
+        nodejs_24 = final.callPackage ./pkgs/nodejs-bin.nix { };
+        nodejs-slim_24 = final.nodejs_24;
+      };
+
       localPath = builtins.getEnv "DOTFILES_LOCAL_NIX";
 
       local =
@@ -46,6 +53,7 @@
 
           overlays = [
             fenix.overlays.default
+            nodejsOverlay
           ];
 
           config.allowUnfree = true;
@@ -149,6 +157,7 @@
 
                       overlays = [
                         fenix.overlays.default
+                        nodejsOverlay
                       ];
 
                       config.allowUnfree = true;
