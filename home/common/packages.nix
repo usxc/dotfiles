@@ -11,7 +11,7 @@
   # Put packages here when they are useful on every supported environment.
   home.packages = with pkgs; [
     # Runtimes
-    nodejs_24
+    nodejs-bin
     bun
     pnpm
     uv

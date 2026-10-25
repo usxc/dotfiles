@@ -4,7 +4,6 @@
   stdenvNoCC,
   fetchurl,
   autoPatchelfHook,
-  python3,
 }:
 let
   version = "24.22.1";
@@ -47,11 +46,6 @@ stdenvNoCC.mkDerivation {
   preFixup = ''
     PATH="$out/bin:$PATH" patchShebangs "$out/lib/node_modules/npm"
   '';
-
-  passthru = {
-    python = python3;
-    interpreterName = "nodejs";
-  };
 
   meta = {
     description = "Node.js 24 official security release";
