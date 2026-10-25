@@ -30,9 +30,6 @@
     ])
     rust-analyzer
 
-    # TypeScript
-    typescript-language-server
-
     # Lua
     lua5_4
     lua-language-server
