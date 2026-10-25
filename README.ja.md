@@ -338,7 +338,6 @@ macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にし
 │   ├── darwin/               # macOS 専用 Home Manager モジュール
 │   │   ├── default.nix       # macOS Home Manager エントリーポイント
 │   │   ├── packages.nix      # macOS パッケージ
-│   │   ├── aerospace.nix     # AeroSpace
 │   │   └── terminals.nix     # Ghostty 設定リンク
 │   └── linux/                # Linux / WSL Home Manager モジュール
 │       ├── default.nix       # Linux Home Manager エントリーポイント
@@ -346,10 +345,8 @@ macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にし
 │       ├── session.nix       # Linux session variables
 │       └── wsl.nix           # WSL
 └── configs/
-    ├── ghostty/
-    │   └── config.ghostty    # Ghostty 設定
-    └── aerospace/
-        └── aerospace.toml    # AeroSpace 設定
+    └── ghostty/
+        └── config.ghostty    # Ghostty 設定
 ```
 
 ## Requirements
