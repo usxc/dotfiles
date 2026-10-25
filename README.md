@@ -1,245 +1,67 @@
 # dotfiles
 
-Apple Silicon macOS と x86_64 Linux / WSL 用の個人 dotfiles です。
-
-このリポジトリでは Nix flakes、macOS では nix-darwin、macOS と Linux の両方で Home Manager を使っています。
+Apple Silicon macOS と x86_64 Linux / WSL 用の dotfiles です。
 
 ## Initial Setup
 
-### macOS
+macOS・Linux・WSLで共通の手順です。Gitとcurlを事前に用意してください。
 
-#### 1. Nix をインストールする
+### 1. Nixを準備する
 
-Nix がまだ入っていない場合は、先に Nix をインストールします。
+Nixが未導入の場合は、flakesを有効にしてインストールします。
 
-flakes を有効化して Nix modern installer を実行します。
+WSLの場合は、先に[WSLの準備](docs/setup.md#wsl)を確認してください。
 
 ```bash
 curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable-flakes
 ```
 
-インストーラーは、システムへ変更を加える前に確認を求めることがあります。
-`Proceed? ([Y]es/[n]o/[e]xplain)` と表示されたら、Enter または `y` を入力します。
-
-インストール後、ターミナルを開き直します。
-
-Nix が使えることを確認します。
+インストール後はターミナルを開き直し、Nixが使えることを確認します。
 
 ```bash
 nix --version
 ```
 
-#### 2. リポジトリを clone する
+### 2. リポジトリを取得する
 
 ```bash
 git clone https://github.com/usxc/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-#### 3. Git を設定する
+### 3. Gitのユーザー情報を確認する
 
-`./init-local.sh` は global の Git ユーザー名とメールアドレスを読み取り、`local.nix` に書き込みます。
-
-現在の値を確認します。
+マシン固有の設定を作るため、Gitのglobal設定から名前とメールアドレスを読み取ります。
 
 ```bash
 git config --global user.name
 git config --global user.email
 ```
 
-未設定の場合は、先に設定します。
+未設定の項目があれば、自分の情報を登録してください。
 
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
-#### 4. `local.nix` を作成する
-
-マシン固有の設定を生成します。
+### 4. 設定を生成して適用する
 
 ```bash
-./init-local.sh
+./init-local.sh && ./bootstrap.sh
 ```
 
-デフォルトでは、次の場所に作成されます。
+ユーザー名・ホスト名・Git情報などから、
+`~/.config/dotfiles/local.nix` を生成します。このファイルはGit管理に含めません。
 
-```text
-~/.config/dotfiles/local.nix
-```
+設定例は [local.nix.example](local.nix.example)、
+保存先の変更方法は[セットアップの補足](docs/setup.md#localnix)を参照してください。
 
-Apple Silicon macOS では、生成される内容は次のようになります。
+macOSではnix-darwinとHome Manager、Linux/WSLではHome Managerの設定が適用されます。
+macOSでは管理者認証が必要です。
 
-```nix
-{
-  username = "your-macos-username";
-  hostname = "your-mac";
-
-  platform = "darwin";
-  system = "aarch64-darwin";
-  homeDirectory = "/Users/your-macos-username";
-
-  git = {
-    name = "Your Name";
-    email = "you@example.com";
-  };
-}
-```
-
-`local.nix` はマシン固有の設定です。Git にはコミットしません。
-
-別の場所に作成したい場合は、スクリプト実行時に `DOTFILES_LOCAL_NIX` を指定します。
-
-```bash
-DOTFILES_LOCAL_NIX=/path/to/local.nix ./init-local.sh
-```
-
-#### 5. nix-darwin を初回適用する
-
-初回の nix-darwin activation を実行します。
-
-```bash
-./bootstrap.sh
-```
-
-これで nix-darwin のシステム設定と Home Manager のユーザー設定が適用されます。
-
-以降の日常的な更新には `./rebuild.sh` を使います。
-
-### Linux / WSL
-
-#### 1. Nix をインストールする
-
-Nix がまだ入っていない場合は、先に Nix をインストールします。
-
-flakes を有効化して Nix modern installer を実行します。
-
-```bash
-curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable-flakes
-```
-
-インストール後、shell を開き直します。
-
-Nix が使えることを確認します。
-
-```bash
-nix --version
-```
-
-#### 2. リポジトリを clone する
-
-```bash
-git clone https://github.com/usxc/dotfiles.git ~/dotfiles
-cd ~/dotfiles
-```
-
-#### 3. Git を設定する
-
-`./init-local.sh` は global の Git ユーザー名とメールアドレスを読み取り、`local.nix` に書き込みます。
-
-現在の値を確認します。
-
-```bash
-git config --global user.name
-git config --global user.email
-```
-
-未設定の場合は、先に設定します。
-
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "you@example.com"
-```
-
-#### 4. `local.nix` を作成する
-
-マシン固有の設定を生成します。
-
-```bash
-./init-local.sh
-```
-
-x86_64 Linux / WSL では、生成される内容は次のようになります。
-
-```nix
-{
-  username = "your-linux-username";
-
-  # Linux ホスト名、または WSL ディストリビューション名によって変わります。
-  # 例: "ubuntu", "debian", "arch", "my-linux"
-  hostname = "ubuntu";
-
-  platform = "linux";
-  system = "x86_64-linux";
-  homeDirectory = "/home/your-linux-username";
-
-  isWsl = true;
-
-  git = {
-    name = "Your Name";
-    email = "you@example.com";
-  };
-}
-```
-
-`isWsl = true;` は WSL を検出した場合だけ生成されます。
-
-Linux の出力名は次の形式です。
-
-```text
-homeConfigurations.<username>@<hostname>
-```
-
-#### 5. Home Manager を初回適用する
-
-初回の Home Manager activation を実行します。
-
-```bash
-./bootstrap.sh
-```
-
-これで flake input の Home Manager を使って Linux / WSL のユーザー設定が適用されます。
-
-以降の日常的な更新には `./rebuild.sh` を使います。
-
-#### 6. zsh をログインシェルにする
-
-Linux / WSL では、Home Manager によって zsh の設定は作成されます。
-
-ただし、ログインシェル自体は自動で zsh に変わらない場合があります。
-
-`./bootstrap.sh` の後に、次を一度だけ実行します。
-
-```bash
-ZSH_PATH="$(command -v zsh)"
-
-if [ -z "$ZSH_PATH" ]; then
-  echo "zsh not found"
-  exit 1
-fi
-
-if ! grep -qxF "$ZSH_PATH" /etc/shells; then
-  echo "$ZSH_PATH" | sudo tee -a /etc/shells
-fi
-
-chsh -s "$ZSH_PATH"
-```
-
-WSL の場合は、PowerShell 側で WSL を再起動します。
-
-```powershell
-wsl --shutdown
-```
-
-その後、Linux / WSL を開き直して確認します。
-
-```bash
-echo "$SHELL"
-```
-
-`zsh` が含まれていれば OK です。
-
-以降の日常的な更新には `./rebuild.sh` を使います。
+適用後はターミナルを開き直してください。
+Linux/WSLでは、[ログインシェルをzshに変更する手順](docs/setup.md#zsh)も確認してください。
 
 ## Daily Usage
 
@@ -321,6 +143,10 @@ macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にし
 ├── bootstrap.sh              # 初回適用
 ├── rebuild.sh                # 日常的な rebuild
 ├── .gitignore
+├── docs/
+│   └── setup.md              # セットアップの補足
+├── pkgs/
+│   └── nodejs-bin.nix        # Node.js の独自パッケージ定義
 ├── hosts/
 │   └── darwin/
 │       └── default.nix       # nix-darwin システム設定
