@@ -4,7 +4,8 @@
 {
   imports = [
     ./packages.nix
-    ./aerospace.nix
     ./terminals.nix
   ];
+
+  xdg.enable = true;
 }
