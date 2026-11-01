@@ -25,6 +25,30 @@
       (lib.mkOrder 1000 ''
         bindkey -e
 
+        # Nix and Home Manager initialize PATH before .zshrc. Keep inherited
+        # project toolchains first, and only add profiles missing from PATH.
+        () {
+          local profile_dir
+          for profile_dir in \
+            "/run/current-system/sw/bin" \
+            "/nix/var/nix/profiles/default/bin" \
+            "/etc/profiles/per-user/$USER/bin" \
+            "$HOME/.nix-profile/bin"; do
+            if [[ -d "$profile_dir" && ''${path[(Ie)$profile_dir]} -eq 0 ]]; then
+              path+=("$profile_dir")
+            fi
+          done
+        }
+
+        ${lib.optionalString (local.platform == "darwin") ''
+          # Homebrew on Apple Silicon
+          if [ -d "/opt/homebrew/bin" ]; then
+            path=($path "/opt/homebrew/bin")
+          fi
+        ''}
+
+        export PATH
+
         if command -v code >/dev/null 2>&1; then
           export EDITOR="code --wait"
           export VISUAL="code --wait"
@@ -35,35 +59,6 @@
           export EDITOR="vi"
           export VISUAL="vi"
         fi
-
-        # Home Manager user profile
-        if [ -d "$HOME/.nix-profile/bin" ]; then
-          path=("$HOME/.nix-profile/bin" $path)
-        fi
-
-        # nix-darwin per-user profile
-        if [ -d "/etc/profiles/per-user/$USER/bin" ]; then
-          path=("/etc/profiles/per-user/$USER/bin" $path)
-        fi
-
-        # Nix daemon profile
-        if [ -d "/nix/var/nix/profiles/default/bin" ]; then
-          path=("/nix/var/nix/profiles/default/bin" $path)
-        fi
-
-        # nix-darwin / NixOS system profile
-        if [ -d "/run/current-system/sw/bin" ]; then
-          path=("/run/current-system/sw/bin" $path)
-        fi
-
-        ${lib.optionalString (local.platform == "darwin") ''
-          # Homebrew on Apple Silicon
-          if [ -d "/opt/homebrew/bin" ]; then
-            path=($path "/opt/homebrew/bin")
-          fi
-        ''}
-
-        export PATH
       '')
     ];
   };
