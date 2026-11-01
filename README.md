@@ -29,16 +29,13 @@ git clone https://github.com/usxc/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-### 3. Gitのユーザー情報を確認する
+### 3. Gitのユーザー情報を用意する
 
 マシン固有の設定を作るため、Gitのglobal設定から名前とメールアドレスを読み取ります。
 
-```bash
-git config --global --includes user.name
-git config --global --includes user.email
-```
-
-未設定の項目があれば、自分の情報を登録してください。
+`include` や `~/.config/git/config` にあるglobal設定も読み取ります。
+設定が揃っているかは、次の `init-local.sh` が確認します。
+未設定の場合は、自分の情報を登録してください。
 
 ```bash
 git config --global user.name "Your Name"
@@ -59,6 +56,8 @@ git config --global user.email "you@example.com"
 
 macOSではnix-darwinとHome Manager、Linux/WSLではHome Managerの設定が適用されます。
 macOSでは管理者認証が必要です。
+
+既存のGit設定の扱いは、[Git設定の移行](docs/setup.md#git設定の移行)を参照してください。
 
 適用後はターミナルを開き直してください。
 Linux/WSLでは、[ログインシェルをzshに変更する手順](docs/setup.md#zsh)も確認してください。
@@ -145,6 +144,7 @@ macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にし
 ├── .gitignore
 ├── docs/
 │   └── setup.md              # セットアップの補足
+├── tests/                    # 不具合の回帰テスト
 ├── pkgs/
 │   └── nodejs-bin.nix        # Node.js の独自パッケージ定義
 ├── hosts/
@@ -155,6 +155,7 @@ macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にし
 │   │   ├── default.nix       # 共通 Home Manager エントリーポイント
 │   │   ├── packages.nix      # 共通パッケージと開発ツール
 │   │   ├── git.nix           # Git
+│   │   ├── migrate-git-config.sh # 既存 Git 設定の移行
 │   │   ├── shell.nix         # Zsh
 │   │   ├── direnv.nix        # direnv
 │   │   └── prompt.nix        # Starship

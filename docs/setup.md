@@ -70,6 +70,20 @@ echo "$SHELL"
 
 表示されたパスがzshを指していれば完了です。
 
+## Git設定の移行
+
+Gitの管理設定は `~/.config/git/config` に生成されます。
+既存の `~/.gitconfig` にある直接の `user.name`、`user.email`、`init.defaultBranch` は、
+管理設定より優先されるため、初回適用・再適用時に整理します。
+
+変更前の内容は `~/.gitconfig.before-dotfiles.XXXXXX` に保存し、
+この3項目だけを削除します。認証・署名・alias・`include`・`includeIf` は保持します。
+include先やリポジトリ固有の設定には変更を加えず、通常のGitの優先順位で扱います。
+変更対象がなければ、ファイルの書き換えやバックアップの追加は行いません。
+
+適用後にこのプロジェクトの既定のGitユーザー情報を変更する場合は、
+`local.nix` の `git.name` / `git.email` を編集して `./rebuild.sh` を実行してください。
+
 ## local.nix
 
 `./init-local.sh` は、マシン固有の設定を既定では `~/.config/dotfiles/local.nix` に生成します。

@@ -128,8 +128,22 @@ detect_is_wsl() {
 
 get_git_config() {
   local key="$1"
+  local value result
 
-  git config --global --includes --get "$key" 2>/dev/null || true
+  if value="$(git config --global --includes --get "$key" 2>/dev/null)"; then
+    printf '%s\n' "$value"
+    return
+  else
+    result=$?
+  fi
+  [[ "$result" -eq 1 ]] || die "Could not read global Git configuration."
+
+  # With ~/.gitconfig present, --global may not consult the XDG file for a
+  # missing key. Keep the normal precedence while still ignoring local config.
+  if [[ -z "${GIT_CONFIG_GLOBAL+x}" ]]; then
+    git config --file "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+      --includes --get "$key" 2>/dev/null || true
+  fi
 }
 
 if [[ -f "$LOCAL_NIX_PATH" && "$FORCE" != true ]]; then

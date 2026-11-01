@@ -66,6 +66,27 @@ class InitLocalTests(IsolatedTestCase):
                 self.assertIn('email = "included@example.invalid";', generated)
                 self.assertNotIn("Repository User", generated)
 
+    def test_reads_xdg_defaults_when_legacy_config_has_only_other_settings(self):
+        (self.home / ".gitconfig").write_text('[credential]\n helper = cache\n')
+        xdg = self.home / ".config/git/config"
+        xdg.parent.mkdir(parents=True)
+        xdg.write_text('[user]\n name = Managed User\n email = managed@example.invalid\n')
+        result = self.init(BASHES[0], "--force")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('name = "Managed User";', self.local.read_text())
+        self.assertIn('email = "managed@example.invalid";', self.local.read_text())
+
+    def test_explicit_global_config_does_not_fall_back_to_other_global_files(self):
+        xdg = self.home / ".config/git/config"
+        xdg.parent.mkdir(parents=True)
+        xdg.write_text('[user]\n name = Other User\n email = other@example.invalid\n')
+        explicit = self.directory / "explicit.gitconfig"
+        explicit.write_text('[user]\n name = Explicit User\n')
+        self.env["GIT_CONFIG_GLOBAL"] = str(explicit)
+        result = self.init(BASHES[0], "--force")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(self.local.exists())
+
     @unittest.skipUnless(shutil.which("nix"), "Nix is needed to verify string roundtrips")
     def test_valid_identity_roundtrips_without_extra_escaping(self):
         name = '監査 "Quote" \\ Path ${literal} # ; &'
