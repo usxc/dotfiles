@@ -144,7 +144,6 @@ macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にし
 ├── .gitignore
 ├── docs/
 │   └── setup.md              # セットアップの補足
-├── tests/                    # 不具合の回帰テスト
 ├── pkgs/
 │   └── nodejs-bin.nix        # Node.js の独自パッケージ定義
 ├── hosts/
