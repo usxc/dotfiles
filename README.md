@@ -76,7 +76,7 @@ cd ~/dotfiles
 
 ```text
 macOS:      darwin-rebuild switch --impure --flake ".#<hostname>"
-Linux/WSL: home-manager switch -b backup --impure --flake ".#<username>@<hostname>"
+Linux/WSL: home-manager switch -b backup --extra-experimental-features "nix-command flakes" --impure --flake ".#<username>@<hostname>"
 ```
 
 flake inputs を更新します。
