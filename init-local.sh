@@ -165,18 +165,26 @@ if [[ -z "$GIT_NAME" || -z "$GIT_EMAIL" ]]; then
   exit 1
 fi
 
+# Validate every value before creating a temporary file or replacing local.nix.
+ESCAPED_USERNAME="$(escape_nix_string "$USERNAME")"
+ESCAPED_HOSTNAME="$(escape_nix_string "$HOSTNAME_VALUE")"
+ESCAPED_HOME_DIRECTORY="$(escape_nix_string "$HOME_DIRECTORY")"
+ESCAPED_GIT_NAME="$(escape_nix_string "$GIT_NAME")"
+ESCAPED_GIT_EMAIL="$(escape_nix_string "$GIT_EMAIL")"
+
 mkdir -p "$(dirname "$LOCAL_NIX_PATH")"
 
 TMP_FILE="$(mktemp "${LOCAL_NIX_PATH}.tmp.XXXXXX")"
+trap 'rm -f "$TMP_FILE"' EXIT
 
 {
   echo "{"
-  echo "  username = \"$(escape_nix_string "$USERNAME")\";"
-  echo "  hostname = \"$(escape_nix_string "$HOSTNAME_VALUE")\";"
+  printf '  username = "%s";\n' "$ESCAPED_USERNAME"
+  printf '  hostname = "%s";\n' "$ESCAPED_HOSTNAME"
   echo
   echo "  platform = \"$PLATFORM\";"
   echo "  system = \"$SYSTEM\";"
-  echo "  homeDirectory = \"$(escape_nix_string "$HOME_DIRECTORY")\";"
+  printf '  homeDirectory = "%s";\n' "$ESCAPED_HOME_DIRECTORY"
   echo
 
   if [[ "$IS_WSL" == "true" ]]; then
@@ -185,8 +193,8 @@ TMP_FILE="$(mktemp "${LOCAL_NIX_PATH}.tmp.XXXXXX")"
   fi
 
   echo "  git = {"
-  echo "    name = \"$(escape_nix_string "$GIT_NAME")\";"
-  echo "    email = \"$(escape_nix_string "$GIT_EMAIL")\";"
+  printf '    name = "%s";\n' "$ESCAPED_GIT_NAME"
+  printf '    email = "%s";\n' "$ESCAPED_GIT_EMAIL"
   echo "  };"
   echo "}"
 } > "$TMP_FILE"
