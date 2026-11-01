@@ -45,6 +45,27 @@ class InitLocalTests(IsolatedTestCase):
                                 self.assertFalse(self.local.exists())
                             self.assertEqual(list(self.local.parent.glob("local.nix.tmp.*")), [])
 
+    def test_reads_global_includes_without_using_repository_identity(self):
+        identity = self.home / "identity.gitconfig"
+        identity.write_text('[user]\n name = Included User\n email = included@example.invalid\n')
+        self.git("config", "--global", "--unset-all", "user.name")
+        self.git("config", "--global", "--unset-all", "user.email")
+        self.git("config", "--global", "include.path", "identity.gitconfig")
+        repository = self.directory / "repository"
+        self.git("init", "--quiet", repository)
+        self.git("config", "user.name", "Repository User", cwd=repository)
+        self.git("config", "user.email", "repository@example.invalid", cwd=repository)
+        for bash in BASHES:
+            with self.subTest(bash=bash):
+                result = self.run_command(
+                    [bash, ROOT / "init-local.sh", "--force"], cwd=repository, check=False
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                generated = self.local.read_text()
+                self.assertIn('name = "Included User";', generated)
+                self.assertIn('email = "included@example.invalid";', generated)
+                self.assertNotIn("Repository User", generated)
+
     @unittest.skipUnless(shutil.which("nix"), "Nix is needed to verify string roundtrips")
     def test_valid_identity_roundtrips_without_extra_escaping(self):
         name = '監査 "Quote" \\ Path ${literal} # ; &'

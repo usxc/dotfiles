@@ -34,8 +34,8 @@ cd ~/dotfiles
 マシン固有の設定を作るため、Gitのglobal設定から名前とメールアドレスを読み取ります。
 
 ```bash
-git config --global user.name
-git config --global user.email
+git config --global --includes user.name
+git config --global --includes user.email
 ```
 
 未設定の項目があれば、自分の情報を登録してください。

@@ -129,7 +129,7 @@ detect_is_wsl() {
 get_git_config() {
   local key="$1"
 
-  git config --global --get "$key" 2>/dev/null || true
+  git config --global --includes --get "$key" 2>/dev/null || true
 }
 
 if [[ -f "$LOCAL_NIX_PATH" && "$FORCE" != true ]]; then
