@@ -2,6 +2,9 @@
 set -euo pipefail
 
 LOCAL_NIX_PATH="${DOTFILES_LOCAL_NIX:-$HOME/.config/dotfiles/local.nix}"
+if [[ "$LOCAL_NIX_PATH" != /* ]]; then
+  LOCAL_NIX_PATH="$PWD/$LOCAL_NIX_PATH"
+fi
 FORCE=false
 
 die() {
@@ -128,23 +131,37 @@ detect_is_wsl() {
 
 get_git_config() {
   local key="$1"
-  local value result
+  local output_variable="$2"
+  local value result=0
 
-  if value="$(git config --global --includes --get "$key" 2>/dev/null)"; then
-    printf '%s\n' "$value"
-    return
-  else
-    result=$?
-  fi
-  [[ "$result" -eq 1 ]] || die "Could not read global Git configuration."
+  # includeを読み込み、値の末尾改行とGitの出力区切りを区別する。
+  value="$(
+    git_status=0
+    git config --global --includes --get "$key" 2>/dev/null || git_status=$?
+    printf '.'
+    exit "$git_status"
+  )" || result=$?
 
-  # With ~/.gitconfig present, --global may not consult the XDG file for a
-  # missing key. Keep the normal precedence while still ignoring local config.
-  if [[ -z "${GIT_CONFIG_GLOBAL+x}" ]]; then
-    git config --file "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
-      --includes --get "$key" 2>/dev/null || true
+  if [[ "$result" -eq 1 && -z "${GIT_CONFIG_GLOBAL+x}" ]]; then
+    result=0
+    value="$(
+      git_status=0
+      git config --file "${XDG_CONFIG_HOME:-$HOME/.config}/git/config" \
+        --includes --get "$key" 2>/dev/null || git_status=$?
+      printf '.'
+      exit "$git_status"
+    )" || result=$?
   fi
+  [[ "$result" -eq 0 || "$result" -eq 1 ]] || die "Could not read global Git configuration."
+
+  value="${value%.}"
+  value="${value%$'\n'}"
+  printf -v "$output_variable" '%s' "$value"
 }
+
+if [[ -e "$LOCAL_NIX_PATH" || -L "$LOCAL_NIX_PATH" ]]; then
+  [[ -f "$LOCAL_NIX_PATH" ]] || die "local.nix path is not a regular file: $LOCAL_NIX_PATH"
+fi
 
 if [[ -f "$LOCAL_NIX_PATH" && "$FORCE" != true ]]; then
   echo "local.nix already exists: $LOCAL_NIX_PATH"
@@ -164,8 +181,8 @@ IS_WSL="$(detect_is_wsl)"
 [[ -n "$USERNAME" ]] || die "Could not detect username."
 [[ -n "$HOME_DIRECTORY" ]] || die "Could not detect home directory."
 
-GIT_NAME="$(get_git_config user.name)"
-GIT_EMAIL="$(get_git_config user.email)"
+get_git_config user.name GIT_NAME
+get_git_config user.email GIT_EMAIL
 
 if [[ -z "$GIT_NAME" || -z "$GIT_EMAIL" ]]; then
   echo "Error: Git user.name or user.email is not configured globally." >&2
@@ -179,7 +196,6 @@ if [[ -z "$GIT_NAME" || -z "$GIT_EMAIL" ]]; then
   exit 1
 fi
 
-# Validate every value before creating a temporary file or replacing local.nix.
 ESCAPED_USERNAME="$(escape_nix_string "$USERNAME")"
 ESCAPED_HOSTNAME="$(escape_nix_string "$HOSTNAME_VALUE")"
 ESCAPED_HOME_DIRECTORY="$(escape_nix_string "$HOME_DIRECTORY")"
@@ -189,31 +205,52 @@ ESCAPED_GIT_EMAIL="$(escape_nix_string "$GIT_EMAIL")"
 mkdir -p "$(dirname "$LOCAL_NIX_PATH")"
 
 TMP_FILE="$(mktemp "${LOCAL_NIX_PATH}.tmp.XXXXXX")"
-trap 'rm -f "$TMP_FILE"' EXIT
+trap 'rm -f -- "$TMP_FILE"' EXIT
 
 {
-  echo "{"
+  printf '%s\n' '{'
   printf '  username = "%s";\n' "$ESCAPED_USERNAME"
   printf '  hostname = "%s";\n' "$ESCAPED_HOSTNAME"
-  echo
-  echo "  platform = \"$PLATFORM\";"
-  echo "  system = \"$SYSTEM\";"
+  printf '\n'
+  printf '  platform = "%s";\n' "$PLATFORM"
+  printf '  system = "%s";\n' "$SYSTEM"
   printf '  homeDirectory = "%s";\n' "$ESCAPED_HOME_DIRECTORY"
-  echo
+  printf '\n'
 
   if [[ "$IS_WSL" == "true" ]]; then
-    echo "  isWsl = true;"
-    echo
+    printf '  isWsl = true;\n'
+    printf '\n'
   fi
 
-  echo "  git = {"
+  printf '  git = {\n'
   printf '    name = "%s";\n' "$ESCAPED_GIT_NAME"
   printf '    email = "%s";\n' "$ESCAPED_GIT_EMAIL"
-  echo "  };"
-  echo "}"
+  printf '  };\n'
+  printf '}\n'
 } > "$TMP_FILE"
 
-mv "$TMP_FILE" "$LOCAL_NIX_PATH"
+if [[ "$FORCE" == true ]]; then
+  mv "$TMP_FILE" "$LOCAL_NIX_PATH"
+else
+  PUBLISH_STATUS=0
+  PUBLISH_ERROR="$(link "$TMP_FILE" "$LOCAL_NIX_PATH" 2>&1)" || PUBLISH_STATUS=$?
+  if [[ "$PUBLISH_STATUS" -ne 0 ]]; then
+    if [[ -f "$LOCAL_NIX_PATH" ]]; then
+      echo "local.nix already exists: $LOCAL_NIX_PATH"
+      echo "Use './scripts/init-local.sh --force' to overwrite it."
+      exit 0
+    fi
+    printf '%s\n' "$PUBLISH_ERROR" >&2
+    exit "$PUBLISH_STATUS"
+  fi
+fi
+
+if [[ ! -f "$LOCAL_NIX_PATH" ]]; then
+  if [[ -d "$LOCAL_NIX_PATH" && ! -e "$TMP_FILE" ]]; then
+    TMP_FILE="$LOCAL_NIX_PATH/${TMP_FILE##*/}"
+  fi
+  die "local.nix path is not a regular file: $LOCAL_NIX_PATH"
+fi
 
 info "Created: $LOCAL_NIX_PATH"
 echo

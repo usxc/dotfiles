@@ -3,6 +3,9 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOCAL_NIX_PATH="${DOTFILES_LOCAL_NIX:-$HOME/.config/dotfiles/local.nix}"
+if [[ "$LOCAL_NIX_PATH" != /* ]]; then
+  LOCAL_NIX_PATH="$PWD/$LOCAL_NIX_PATH"
+fi
 
 NIX_FLAGS=(
   --extra-experimental-features nix-command
@@ -66,16 +69,18 @@ local_value() {
 }
 
 target_name() {
-  local platform
+  local platform username hostname
 
-  platform="$(local_value platform)"
+  platform="$(local_value platform)" || return
 
   case "$platform" in
     darwin)
       local_value hostname
       ;;
     linux)
-      echo "$(local_value username)@$(local_value hostname)"
+      username="$(local_value username)" || return
+      hostname="$(local_value hostname)" || return
+      printf '%s@%s\n' "$username" "$hostname"
       ;;
     *)
       die "Unknown platform: $platform"
