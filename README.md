@@ -1,12 +1,14 @@
 # dotfiles
 
-Nix（nix-darwin / Home Manager / flakes）で管理するdotfilesです。
-Apple Silicon macOSとx86_64 Linux / WSLに対応しています。
+[日本語 README](README.ja.md) · [日本語セットアップガイド](docs/setup.ja.md)
+
+Dotfiles managed with Nix (nix-darwin / Home Manager / flakes).
+Supports Apple Silicon macOS and x86_64 Linux / WSL.
 
 ## Quick Start
 
-Nixが利用可能で、Gitのglobal設定に `user.name` と `user.email` が設定済みであることが前提です。
-準備が必要な場合は、[初期セットアップ](docs/setup.md#初期セットアップ)から進めてください。
+Nix must be available, and `user.name` and `user.email` must be set in your global Git configuration.
+If preparation is needed, start with [Initial Setup](docs/setup.md#initial-setup).
 
 ```bash
 git clone https://github.com/usxc/dotfiles.git ~/dotfiles
@@ -14,75 +16,75 @@ cd ~/dotfiles
 make init
 ```
 
-`make init` は `~/.config/dotfiles/local.nix` を生成し、初回適用します（既存ファイルは保持）。
-Nix自体のインストールは含みません。macOSでは管理者認証が必要です。
-既存Git設定の扱いは[Git設定の移行](docs/setup.md#git設定の移行)を参照してください。
+`make init` generates `~/.config/dotfiles/local.nix` and applies the configuration for the first time (preserving an existing file).
+It does not install Nix itself. Administrator authentication is required on macOS.
+See [Git Configuration Migration](docs/setup.md#git-configuration-migration) for how existing Git settings are handled.
 
-makeがない場合は `./scripts/init-local.sh && ./scripts/bootstrap.sh` を直接実行できます。
-適用後はターミナルを開き直してください。Linux/WSLでは必要に応じて[zshへ切り替えます](docs/setup.md#zsh)。
+If make is unavailable, you can run `./scripts/init-local.sh && ./scripts/bootstrap.sh` directly.
+Reopen your terminal after applying the configuration. On Linux/WSL, [switch to zsh](docs/setup.md#zsh) if needed.
 
 ## Daily Usage
 
-リポジトリ内で実行します。`make` / `make help` で操作一覧を表示できます。
+Run these commands inside the repository. Use `make` / `make help` to list available commands.
 
 ```bash
-# 設定変更を反映
+# Apply configuration changes
 make rebuild
 ```
 
-依存関係の更新は、次のどちらか一方を選びます（`flake.lock` の更新のみ）。
+To update dependencies, choose one of the following (only `flake.lock` is updated).
 
-| コマンド | 更新対象 |
+| Command | Update scope |
 | --- | --- |
-| `make update-nixpkgs` | Nixpkgsのみ |
-| `make update-all` | 全inputs |
+| `make update-nixpkgs` | Nixpkgs only |
+| `make update-all` | All inputs |
 
 ```bash
-# 更新の差分を確認し、問題がなければ反映
+# Review the update diff, then apply if everything looks correct
 git diff -- flake.lock
 make rebuild
 ```
 
-[更新範囲と固定バージョン](docs/setup.md#inputsの更新)、makeを使わない[直接実行](docs/setup.md#スクリプトの直接実行)は補足を参照してください。
-`local.nix` の保存先を変えた場合は、初回・再適用で同じ `DOTFILES_LOCAL_NIX` を指定します（[指定例](docs/setup.md#localnix)）。
+See the notes on [update scopes and pinned versions](docs/setup.md#updating-inputs) and [running scripts directly](docs/setup.md#running-scripts-directly) without make.
+If you use a different location for `local.nix`, specify the same `DOTFILES_LOCAL_NIX` for initial and subsequent applications ([examples](docs/setup.md#localnix)).
 
 ## Structure
 
 ```text
 .
-├── Makefile                  # 操作の入口（makeで一覧表示）
-├── flake.nix                 # flakeエントリーポイント
-├── flake.lock                # 固定されたflake inputs
-├── local.nix.example         # マシン固有設定の例
-├── scripts/                  # 初期化・適用スクリプト
-│   ├── init-local.sh         # local.nix生成
-│   ├── bootstrap.sh          # 初回適用
-│   └── rebuild.sh            # 日常の再適用
-├── home/                     # Home Managerモジュール
-│   ├── common/               # 全環境共通の設定
-│   │   ├── packages.nix      # 共通の開発ツール・ランタイム
-│   │   ├── git.nix           # Gitユーザー情報・LFS・既存設定の移行
-│   │   ├── shell.nix         # Zsh・補完・エディタ選択
+├── Makefile                  # Command entry points (run make to list them)
+├── flake.nix                 # Flake entry point
+├── flake.lock                # Pinned flake inputs
+├── local.nix.example         # Example machine-specific configuration
+├── scripts/                  # Initialization and application scripts
+│   ├── init-local.sh         # Generate local.nix
+│   ├── bootstrap.sh          # Apply configuration for the first time
+│   └── rebuild.sh            # Reapply configuration for daily use
+├── home/                     # Home Manager modules
+│   ├── common/               # Settings shared across all environments
+│   │   ├── packages.nix      # Shared development tools and runtimes
+│   │   ├── git.nix           # Git identity, LFS, and existing settings migration
+│   │   ├── shell.nix         # Zsh, completion, and editor selection
 │   │   ├── prompt.nix        # Starship
-│   │   └── direnv.nix        # direnv・nix-direnv
-│   ├── darwin/               # macOS専用の設定
-│   │   ├── packages.nix      # macOS専用パッケージ
-│   │   └── terminals.nix     # Ghostty設定リンク
-│   └── linux/                # Linux / WSL用の設定
-│       ├── packages.nix      # Linux専用パッケージ
-│       ├── session.nix       # セッション環境変数
-│       └── wsl.nix           # WSL専用設定・ブラウザー連携
-├── hosts/darwin/             # nix-darwinのシステム設定
-│   └── default.nix           # Nix・ユーザー・sudo認証
-├── pkgs/                     # 独自パッケージ定義
-│   └── nodejs-bin.nix        # Node.js（公式バイナリ）
+│   │   └── direnv.nix        # direnv and nix-direnv
+│   ├── darwin/               # macOS-specific settings
+│   │   ├── packages.nix      # macOS-specific packages
+│   │   └── terminals.nix     # Ghostty configuration link
+│   └── linux/                # Linux / WSL settings
+│       ├── packages.nix      # Linux-specific packages
+│       ├── session.nix       # Session environment variables
+│       └── wsl.nix           # WSL-specific settings and browser integration
+├── hosts/darwin/             # nix-darwin system settings
+│   └── default.nix           # Nix, users, and sudo authentication
+├── pkgs/                     # Custom package definitions
+│   └── nodejs-bin.nix        # Node.js (official binaries)
 ├── configs/ghostty/
-│   └── config.ghostty        # Ghosttyの外観・キーバインド
-└── docs/setup.md             # セットアップ・操作の補足
+│   └── config.ghostty        # Ghostty appearance and keybindings
+└── docs/setup.md             # Setup and usage notes
 ```
 
 ## Requirements
 
-- macOS：Apple Silicon
-- Linux / WSL：x86_64（[WSL2 / systemdの準備](docs/setup.md#wsl)）
-- Git・Nix（makeは任意）
+- macOS: Apple Silicon
+- Linux / WSL: x86_64 ([WSL2 / systemd preparation](docs/setup.md#wsl))
+- Git and Nix (make is optional)
