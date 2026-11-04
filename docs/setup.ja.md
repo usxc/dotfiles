@@ -1,6 +1,6 @@
 # セットアップと操作の補足
 
-[English](setup.md)
+[English Setup](setup.md)
 
 普段の操作はREADMEの [Quick Start](../README.ja.md#quick-start) / [Daily Usage](../README.ja.md#daily-usage) を参照してください。
 

@@ -1,6 +1,6 @@
 # dotfiles
 
-[日本語 README](README.ja.md) · [日本語セットアップガイド](docs/setup.ja.md)
+[日本語](README.ja.md) · [日本語セットアップ](docs/setup.ja.md)
 
 Dotfiles managed with Nix (nix-darwin / Home Manager / flakes).
 Supports Apple Silicon macOS and x86_64 Linux / WSL.
