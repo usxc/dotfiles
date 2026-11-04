@@ -45,7 +45,7 @@ git config --global user.email "you@example.com"
 ### 4. 設定を生成して適用する
 
 ```bash
-./init-local.sh && ./bootstrap.sh
+./scripts/init-local.sh && ./scripts/bootstrap.sh
 ```
 
 ユーザー名・ホスト名・Git情報などから、
@@ -68,10 +68,10 @@ Linux/WSLでは、[ログインシェルをzshに変更する手順](docs/setup.
 
 ```bash
 cd ~/dotfiles
-./rebuild.sh
+./scripts/rebuild.sh
 ```
 
-`./rebuild.sh` は `local.nix` を読み、`platform` に応じて次を実行します。
+`./scripts/rebuild.sh` は `local.nix` を読み、`platform` に応じて次を実行します。
 
 ```text
 macOS:      darwin-rebuild switch --impure --flake ".#<hostname>"
@@ -83,13 +83,13 @@ flake inputs を更新します。
 ```bash
 cd ~/dotfiles
 nix flake update
-./rebuild.sh
+./scripts/rebuild.sh
 ```
 
 `local.nix` がデフォルト以外の場所にある場合は、日常的なコマンドでも同じパスを指定します。
 
 ```bash
-DOTFILES_LOCAL_NIX=/path/to/local.nix ./rebuild.sh
+DOTFILES_LOCAL_NIX=/path/to/local.nix ./scripts/rebuild.sh
 ```
 
 ## Scripts
@@ -101,13 +101,13 @@ DOTFILES_LOCAL_NIX=/path/to/local.nix ./rebuild.sh
 platform、system、username、hostname、home directory、WSL 判定、global の Git ユーザー情報を検出します。
 
 ```bash
-./init-local.sh
+./scripts/init-local.sh
 ```
 
 既存の生成済みファイルを上書きする場合は `--force` を使います。
 
 ```bash
-./init-local.sh --force
+./scripts/init-local.sh --force
 ```
 
 ### `bootstrap.sh`
@@ -117,7 +117,7 @@ platform、system、username、hostname、home directory、WSL 判定、global �
 macOS では flake input の nix-darwin を使って bootstrap します。Linux / WSL では flake input の Home Manager を使って bootstrap します。
 
 ```bash
-./bootstrap.sh
+./scripts/bootstrap.sh
 ```
 
 ### `rebuild.sh`
@@ -127,7 +127,7 @@ macOS では flake input の nix-darwin を使って bootstrap します。Linux
 macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にします。Linux / WSL では bootstrap 後に `home-manager` が使えることを前提にします。
 
 ```bash
-./rebuild.sh
+./scripts/rebuild.sh
 ```
 
 ## Structure
@@ -138,9 +138,10 @@ macOS では bootstrap 後に `darwin-rebuild` が使えることを前提にし
 ├── flake.nix                 # flake エントリーポイント
 ├── flake.lock                # 固定された flake inputs
 ├── local.nix.example         # マシン固有設定の例
-├── init-local.sh             # local.nix 生成
-├── bootstrap.sh              # 初回適用
-├── rebuild.sh                # 日常的な rebuild
+├── scripts/                  # 初期化・適用スクリプト
+│   ├── init-local.sh         # local.nix 生成
+│   ├── bootstrap.sh          # 初回適用
+│   └── rebuild.sh            # 日常的な rebuild
 ├── .gitignore
 ├── docs/
 │   └── setup.md              # セットアップの補足

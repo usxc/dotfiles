@@ -82,11 +82,11 @@ include先やリポジトリ固有の設定には変更を加えず、通常のG
 変更対象がなければ、ファイルの書き換えやバックアップの追加は行いません。
 
 適用後にこのプロジェクトの既定のGitユーザー情報を変更する場合は、
-`local.nix` の `git.name` / `git.email` を編集して `./rebuild.sh` を実行してください。
+`local.nix` の `git.name` / `git.email` を編集して `./scripts/rebuild.sh` を実行してください。
 
 ## local.nix
 
-`./init-local.sh` は、マシン固有の設定を既定では `~/.config/dotfiles/local.nix` に生成します。
+`./scripts/init-local.sh` は、マシン固有の設定を既定では `~/.config/dotfiles/local.nix` に生成します。
 生成される項目とOSごとの値は [local.nix.example](../local.nix.example) を参照してください。
 
 既存のファイルは通常の実行では上書きされません。
@@ -96,12 +96,12 @@ include先やリポジトリ固有の設定には変更を加えず、通常のG
 `init-local.sh` と `bootstrap.sh` に、同じ `DOTFILES_LOCAL_NIX` を渡してください。
 
 ```bash
-DOTFILES_LOCAL_NIX=/path/to/local.nix ./init-local.sh &&
-DOTFILES_LOCAL_NIX=/path/to/local.nix ./bootstrap.sh
+DOTFILES_LOCAL_NIX=/path/to/local.nix ./scripts/init-local.sh &&
+DOTFILES_LOCAL_NIX=/path/to/local.nix ./scripts/bootstrap.sh
 ```
 
 以降の再適用でも、同じパスを指定します。
 
 ```bash
-DOTFILES_LOCAL_NIX=/path/to/local.nix ./rebuild.sh
+DOTFILES_LOCAL_NIX=/path/to/local.nix ./scripts/rebuild.sh
 ```

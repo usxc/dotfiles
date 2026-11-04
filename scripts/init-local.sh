@@ -148,7 +148,7 @@ get_git_config() {
 
 if [[ -f "$LOCAL_NIX_PATH" && "$FORCE" != true ]]; then
   echo "local.nix already exists: $LOCAL_NIX_PATH"
-  echo "Use './init-local.sh --force' to overwrite it."
+  echo "Use './scripts/init-local.sh --force' to overwrite it."
   exit 0
 fi
 
@@ -175,7 +175,7 @@ if [[ -z "$GIT_NAME" || -z "$GIT_EMAIL" ]]; then
   echo "  git config --global user.email \"you@example.com\"" >&2
   echo >&2
   echo "Then run:" >&2
-  echo "  ./init-local.sh" >&2
+  echo "  ./scripts/init-local.sh" >&2
   exit 1
 fi
 

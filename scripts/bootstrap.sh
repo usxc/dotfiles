@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOCAL_NIX_PATH="${DOTFILES_LOCAL_NIX:-$HOME/.config/dotfiles/local.nix}"
 
 NIX_FLAGS=(
@@ -36,7 +36,7 @@ ensure_nix() {
 require_local_nix() {
   if [[ ! -f "$LOCAL_NIX_PATH" ]]; then
     echo "Error: local.nix not found: $LOCAL_NIX_PATH" >&2
-    echo "Run: ./init-local.sh" >&2
+    echo "Run: ./scripts/init-local.sh" >&2
     exit 1
   fi
 }
