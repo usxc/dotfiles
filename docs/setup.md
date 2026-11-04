@@ -1,6 +1,6 @@
 # Setup and Usage Notes
 
-[日本語セットアップ](setup.ja.md)
+[日本語](setup.ja.md)
 
 For everyday use, see [Quick Start](../README.md#quick-start) / [Daily Usage](../README.md#daily-usage) in the README.
 
